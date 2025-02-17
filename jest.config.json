@@ -1,0 +1,9 @@
+{
+	"clearMocks": true,
+	"collectCoverage": true,
+	"collectCoverageFrom": ["**/*.js", "!**/test/**"],
+	"coverageDirectory": "coverage",
+	"coveragePathIgnorePatterns": ["/coverage/", "/node_modules/"],
+	"testEnvironment": "node",
+	"testMatch": ["**/+(*.)+(spec|test).js?(x)"]
+}

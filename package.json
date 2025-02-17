@@ -1,19 +1,29 @@
 {
-  "name": "web-crawler",
-  "version": "1.0.0",
-  "description": "A simple web crawler that, given a starting URL, visits each URL it finds on the same domain and outputs the visited URL and links found on that page.",
-  "main": "index.js",
-  "scripts": {
-    "test": "npm run test"
-  },
-  "keywords": [
-    "web",
-    "crawler"
-  ],
-  "author": "Cynthia Mbulu",
-  "license": "MIT",
-  "dependencies": {
-    "axios": "^1.7.9",
-    "cheerio": "^1.0.0"
-  }
+	"name": "web-crawler",
+	"version": "1.0.0",
+	"description": "A simple web crawler that, given a starting URL, visits each URL it finds on the same domain and outputs the visited URL and links found on that page.",
+	"main": "index.js",
+	"scripts": {
+		"test": "jest",
+		"prettier": "prettier . --write"
+	},
+	"keywords": [
+		"web",
+		"crawler"
+	],
+	"author": "Cynthia Mbulu",
+	"license": "MIT",
+	"dependencies": {
+		"@eslint/js": "^9.20.0",
+		"axios": "^1.7.9",
+		"cheerio": "^1.0.0",
+		"eslint-config-prettier": "^10.0.1",
+		"eslint-plugin-jsdoc": "^50.6.3",
+		"eslint-plugin-prettier": "^5.2.3"
+	},
+	"devDependencies": {
+		"eslint": "^8.0.0",
+		"jest": "^29.7.0",
+		"prettier": "^3.5.1"
+	}
 }

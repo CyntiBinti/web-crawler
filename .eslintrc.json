@@ -1,0 +1,49 @@
+{
+	"extends": ["plugin:prettier/recommended"],
+	"plugins": ["jsdoc"],
+	"env": {
+		"browser": true,
+		"node": true,
+		"jest": true,
+		"es2021": true
+	},
+	"parserOptions": {
+		"ecmaVersion": "latest",
+		"sourceType": "module"
+	},
+	"overrides": [
+		{
+			"files": ["*.js"],
+			"extends": ["plugin:jsdoc/recommended"]
+		}
+	],
+	"rules": {
+		"indent": "off",
+		"quotes": "off",
+		"space-before-function-paren": "off",
+		"prettier/prettier": "error",
+		"jsdoc/check-alignment": "error",
+		"jsdoc/check-indentation": "error",
+		"jsdoc/check-syntax": "error",
+		"jsdoc/require-jsdoc": [
+			"warn",
+			{
+				"require": {
+					"FunctionDeclaration": true,
+					"MethodDefinition": true,
+					"ClassDeclaration": true,
+					"ArrowFunctionExpression": true,
+					"FunctionExpression": true
+				}
+			}
+		],
+		"jsdoc/check-access": "error",
+		"jsdoc/no-undefined-types": ["error", { "definedTypes": ["Iterable"] }],
+		"jsdoc/require-param": "error",
+		"jsdoc/require-returns": "error",
+		"jsdoc/require-description-complete-sentence": "off",
+		"jsdoc/require-param-description": "off",
+		"jsdoc/require-returns-description": "off",
+		"jsdoc/tag-lines": ["warn", "any", { "startLines": 1 }]
+	}
+}
