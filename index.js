@@ -120,18 +120,20 @@ const htmlURLExtractor = async (html, seedOrigin) => {
 		for (const link of Array.from(links)) {
 			const extractedLink = $(link).attr('href');
 
-			if (extractedLink.startsWith(seedOrigin)) {
-				rationalisedExtractedURLs.push(extractedLink);
-			}
+			if (extractedLink) {
+				if (extractedLink.startsWith(seedOrigin)) {
+					rationalisedExtractedURLs.push(extractedLink);
+				}
 
-			if (extractedLink.startsWith('/')) {
-				try {
-					const extractedURL = new URL(extractedLink, seedOrigin);
-					rationalisedExtractedURLs.push(extractedURL.href);
-				} catch (error) {
-					throw new Error(
-						'htmlURLExtractor could not construct a valid URL from extracted link in HTML text.'
-					);
+				if (extractedLink.startsWith('/')) {
+					try {
+						const extractedURL = new URL(extractedLink, seedOrigin);
+						rationalisedExtractedURLs.push(extractedURL.href);
+					} catch (error) {
+						throw new Error(
+							'htmlURLExtractor could not construct a valid URL from extracted link in HTML text.'
+						);
+					}
 				}
 			}
 		}
@@ -139,6 +141,22 @@ const htmlURLExtractor = async (html, seedOrigin) => {
 		return rationalisedExtractedURLs;
 	} catch (error) {
 		console.error(error);
+	}
+};
+
+/**
+ * @type {Function} validateUrlArray
+ * @description - A utility function that validates whether the parsed argument is a non-empty, valid array of strings
+ * @param {string[]} array - an array of strings
+ * @param {string} name - name of the array to output in error message
+ */
+const validateUrlArray = (array, name) => {
+	if (
+		!Array.isArray(array) ||
+		array.length === 0 ||
+		!array.every((url) => typeof url === 'string')
+	) {
+		throw new Error(`${name} provided to tidyUpUrlQueue function is invalid`);
 	}
 };
 
@@ -159,61 +177,46 @@ const tidyUpUrlQueue = (
 	seedOrigin,
 	extractedURLs
 ) => {
-	if (
-		!Array.isArray(urlQueue) ||
-		urlQueue.length === 0 ||
-		!urlQueue.every((url) => typeof url === 'string')
-	) {
-		throw new Error('URL queue provided to tidyUpUrlQueue function is invalid.');
-	}
+	validateUrlArray(urlQueue, 'URL queue');
+	validateUrlArray(DISALLOWED_ROBOTS_TXT_PATHS, 'Robots.txt disallowed paths');
+	validateUrlArray(extractedURLs, 'Extracted URLs');
 
 	if (!Array.isArray(visitedURLs)) {
 		throw new Error('Visited URLs provided to tidyUpUrlQueue function is not an array.');
-	}
-
-	if (
-		!Array.isArray(DISALLOWED_ROBOTS_TXT_PATHS) ||
-		DISALLOWED_ROBOTS_TXT_PATHS.length === 0 ||
-		!DISALLOWED_ROBOTS_TXT_PATHS.every((url) => typeof url === 'string')
-	) {
-		throw new Error('DISALLOWED_ROBOTS_TXT_PATHS provided to tidyUpUrlQueue function is invalid.');
 	}
 
 	if (!seedOrigin || typeof seedOrigin !== 'string') {
 		throw new Error('Seed origin provided to tidyUpUrlQueue function is invalid.');
 	}
 
-	if (
-		!Array.isArray(extractedURLs) ||
-		extractedURLs.length === 0 ||
-		!extractedURLs.every((url) => typeof url === 'string')
-	) {
-		throw new Error('Extracted URLs provided to tidyUpUrlQueue function is invalid.');
-	}
+	// create a Set of all URLs to exclude
+	const excludeSet = new Set([...visitedURLs, ...urlQueue]);
 
-	/**
-	 * @type {string[]}
-	 */
-	let tidyUpExtractedURLs = [];
+	const newValidURLs = extractedURLs.filter((url) => {
+		// check if URL is valid and hasn't been seen before
+		const isNewURL = !excludeSet.has(url);
+		// check if URL is allowed by robots.txt
+		const isAllowedByRobots = !DISALLOWED_ROBOTS_TXT_PATHS.some((path) => url.includes(path));
+		// check if URL is in the correct domain
+		const isCorrectDomain = url.startsWith(seedOrigin);
+		// check if URL is not a PDF, MP3, M4A, PNG, JPG file type
+		const FILE_EXTENSIONS = ['.pdf', '.mp3', '.m4a', '.png', '.jpg'];
+		const isNotAFileType = !FILE_EXTENSIONS.some((ext) => url.toLowerCase().endsWith(ext));
 
-	// if the url doesn't contain a disallowed path, and it's not been visited yet,
-	// and it is of the same subdomain, and it's not a pdf file, then keep it
-	for (const url of extractedURLs) {
-		if (
-			!DISALLOWED_ROBOTS_TXT_PATHS.some((path) => url.includes(path)) &&
-			!visitedURLs.includes(url) &&
-			url.startsWith(seedOrigin) &&
-			!url.endsWith('.pdf')
-		) {
-			tidyUpExtractedURLs.push(url);
-		}
-	}
+		return isNewURL && isAllowedByRobots && isCorrectDomain && isNotAFileType;
+	});
 
-	const queueSet = new Set([...tidyUpExtractedURLs, ...urlQueue]);
-	const tidiedUpURLQueue = Array.from(queueSet.values());
+	// remove the currently processed URL (first item) from the queue
+	// and add the new valid URLs to the end
+	const updatedQueue = [...urlQueue.slice(1), ...newValidURLs];
 
-	// return unique URLs in the queue
-	return tidiedUpURLQueue;
+	console.log("🕷️ I've crawled", visitedURLs.length, 'URLs so far!');
+	console.log('📈 Queue length is currently:', updatedQueue.length);
+	console.log('🚫 Currently excluding:', excludeSet.size, 'URLs');
+	console.log('🔎 Found', extractedURLs.length, 'raw URLs');
+	console.log('💫 Adding', newValidURLs.length, 'new valid URLs to queue');
+
+	return updatedQueue;
 };
 
 /**
@@ -264,18 +267,14 @@ const tidyUpUrlQueue = (
 			/**
 			 * @type {string[]}
 			 */
-			const unprocessedURLs = [];
+			const unprocessableURLs = [];
 
 			urlQueue.push(seedURL.href);
-
-			console.log('urlQueue length START', urlQueue.length);
-			console.log('visitedURLs length START', visitedURLs.length);
-			console.log('unprocessedURLs length START', unprocessedURLs.length);
 
 			while (urlQueue.length > 0) {
 				const currentURL = urlQueue[0];
 
-				console.log(`🕷️ Attempting to crawl "${currentURL}" page...`);
+				console.log(`🔄 Attempting to crawl "${currentURL}" page...`);
 				/**
 				 * @type {string}
 				 */
@@ -307,30 +306,25 @@ const tidyUpUrlQueue = (
 							foundURLs
 						);
 						urlQueue = [...tidiedUpUrlQueue];
-
-						urlQueue.shift();
 					} else {
 						console.log(
-							`🔗 No links found on "${currentURL}" page. Removing from the queue and adding to unprocessed list. Moving onto next page to crawl.`
+							`⛓️‍💥 No links found on "${currentURL}" page. Removing from the queue and adding to unprocessed list. Moving onto next page to crawl.`
 						);
-						unprocessedURLs.push(currentURL);
+						unprocessableURLs.push(currentURL);
 						urlQueue.shift();
 					}
 				} else {
 					// if HTML can't be fetched, then for now remove from the queue
 					console.log(
-						`🕷️ Failure: Could not crawl "${currentURL}" page. Removing from the queue and adding to unprocessed list. Moving onto next page to crawl.`
+						`❌ Failure: Could not crawl "${currentURL}" page. Removing from the queue and adding to unprocessed list. Moving onto next page to crawl.`
 					);
-					unprocessedURLs.push(currentURL);
+					unprocessableURLs.push(currentURL);
 					urlQueue.shift();
 				}
-				console.log('urlQueue length DURING', urlQueue.length);
-				console.log('visitedURLs length DURING', visitedURLs.length);
-				console.log('unprocessedURLs length DURING', unprocessedURLs.length);
 			}
-			console.log('urlQueue length END', urlQueue.length);
-			console.log('visitedURLs length END', visitedURLs.length);
-			console.log('unprocessedURLs length END', unprocessedURLs.length);
+			console.log(
+				`\n🙌 Web crawler complete! I crawled a total of ${visitedURLs.length} web pages.\nUnable to crawl ${unprocessableURLs.length} URLs.\n${unprocessableURLs.length > 0 ? `Here they are: ${unprocessableURLs.join(' | ')}` : ''}`
+			);
 		} catch (error) {
 			console.error(error.message);
 			process.exit(1);

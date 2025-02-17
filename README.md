@@ -35,10 +35,13 @@ npm run test
 
 This was an enjoyably challenging task, balancing robustness and pragmatism, in light of the time constraints.
 
+- crawler handles failures gracefully with handled try/catch errors and separation of concerns
+- handling non-web page elements e.g. pdfs
+
+
 ### Limitations
 
 - Doesn't handle re-directs e.g. `'https://monzo.com/'` vs `'https://www.monzo.com/'` - both appear in the unique set. Could get around this by checking IP address with DNS perhaps
-- handling non-web page elements e.g. pdfs
 - could improve using BFS (over DFS) as essentially a graph, and want to avoid potential crawler-trap with DFS approach
-- if crawler fails how does it fail gracefully
 - if a URL fails then how will it retry (ddos/rate limiting) - ?add into a timeout queue to retry later up to max 5 re-tries
+- no persistent storage so if programme shuts down then can't re-start where it left off, and will have to crawl again from the start
