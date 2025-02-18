@@ -5,7 +5,7 @@ jest.mock('../lib/helpers', () => ({
 	tidyUpUrlQueue: jest.fn().mockReturnValue([])
 }));
 
-const { crawl } = require('../index.js');
+const { webCrawler } = require('../index.js');
 const { fetchHTML, fetchRobotsTxt, htmlUrlExtractor, tidyUpUrlQueue } = require('../lib/helpers');
 
 describe('Web Crawler', () => {
@@ -31,7 +31,7 @@ describe('Web Crawler', () => {
 		const testArgv = ['node', 'index.js', mockSeedUrl];
 
 		try {
-			await crawl(testArgv);
+			await webCrawler(testArgv);
 		} catch (error) {
 			// if unexpected process.exit, then fail the test
 			if (!error.message.includes('Process.exit() was called')) {
@@ -50,7 +50,7 @@ describe('Web Crawler', () => {
 	it('should handle missing seed URL', async () => {
 		const testArgv = ['node', 'index.js'];
 
-		await expect(crawl(testArgv)).rejects.toThrow('Process.exit() was called with: 1');
+		await expect(webCrawler(testArgv)).rejects.toThrow('Process.exit() was called with: 1');
 		expect(console.error).toHaveBeenCalledWith(expect.stringContaining('Seed URL not provided'));
 		expect(mockExit).toHaveBeenCalledTimes(1);
 	});

@@ -4,7 +4,6 @@
  * @file Write a simple web crawler in a programming language you're familiar with. Given a starting URL, the crawler should visit each URL it finds on the same domain. It should print each URL visited, and a list of links found on that page. The crawler should be limited to one subdomain - so when you start with *https://monzo.com/*, it would crawl all pages on the monzo.com website, but not follow external links, for example to facebook.com or community.monzo.com. We would like to see your own implementation of a web crawler. Please do not use frameworks like scrapy or go-colly which handle all the crawling behind the scenes or someone else's code. You are welcome to use libraries to handle things like HTML parsing.
  */
 
-const { argv } = require('node:process');
 const { URL } = require('node:url');
 const { requestDelay } = require('./lib/utils');
 const { fetchRobotsTxt, fetchHTML, htmlUrlExtractor, tidyUpUrlQueue } = require('./lib/helpers');
@@ -14,7 +13,7 @@ const { fetchRobotsTxt, fetchHTML, htmlUrlExtractor, tidyUpUrlQueue } = require(
  * @param {string[]} args - Command line arguments
  * @returns {Promise<void>}
  */
-async function crawl(args) {
+async function webCrawler(args) {
 	try {
 		if (!args[2]) {
 			throw new Error('Seed URL not provided. Exiting web crawler.');
@@ -109,8 +108,8 @@ async function crawl(args) {
 // only run the crawler if this file is being executed directly
 // this is to prevent the crawler from running when this file is imported into a test file
 if (require.main === module) {
-	crawl(process.argv);
+	webCrawler(process.argv);
 }
 
 // Export for testing
-module.exports = { crawl };
+module.exports = { webCrawler };

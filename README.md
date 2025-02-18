@@ -27,7 +27,7 @@ Dependencies:
 Run the crawler by providing a starting URL:
 
 ```bash
-node index.js https://www.monzo.com/
+node index.js https://monzo.com/
 ```
 
 Execute the test suite:
