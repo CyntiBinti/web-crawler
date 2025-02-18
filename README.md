@@ -122,9 +122,9 @@ I feel my solution successfully meets all the core requirements:
 
 #### Resilience
 
-- The current error handling is functional but basic - failed URLs are stored in an unprocessableURLs array and reported at the end. Given more time, I'd implement a more sophisticated retry mechanism with exponential backoff. Instead of just storing URL strings, I'd create objects containing the failed URL, retry count, and timeout period. This would allow for intelligent retry attempts with increasing delays between each try, up to a maximum number of attempts before considering the URL truly unprocessable.
+- The current error handling is functional but failed URLs are stored in an unprocessableURLs array and reported at the end. Given more time, I'd implement a more sophisticated retry mechanism with exponential backoff. Instead of just storing URL strings, I'd create objects containing the failed URL, retry count, and timeout period. This would allow for intelligent retry attempts with increasing delays between each try, up to a maximum number of attempts before considering the URL truly unprocessable.
 
-- Another limitation is the lack of state persistence. If the script stops running, all progress is lost and the crawler needs to start over from the beginning. A simple solution would be to use Node's writeFileSync to periodically save the current state (visited URLs and queue contents) to disk. This would allow the crawler to resume from where it left off if interrupted. This would require some restructuring of how the crawler receives its initial URL(s), but would make it much more resilient in practice.
+- Another limitation is the lack of state persistence. If the script stops running, all progress is lost and the crawler needs to start over from the beginning. I'd opt for a simple solution by using Node's writeFileSync to periodically save the current state (visited URLs and queue contents) to disk. This would allow the crawler to resume from where it left off if interrupted. With my current implementation, I'd have to restructure how the crawler receives its initial URL(s), but this change would make it much more resilient.
 
 #### Test Coverage Improvements
 
