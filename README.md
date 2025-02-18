@@ -4,15 +4,14 @@ A robust web crawler implementation that, given a starting URL, systematically v
 
 - [Getting Started](#getting-started)
 - [Usage](#usage)
-- [Technical Overview](#technical-overview)
 - [Reflections](#reflections)
   - [Functional Requirements](#functional-requirements)
-  - [Technical Highlights](#technical-highlights)
+  - [Technical Overview](#technical-overview)
   - [Future Enhancements](#future-enhancements)
 
 ## Getting Started
 
-This Node.js script requires Node.js version 18 or higher. To set up the project:
+This Node.js script requires Node.js version 12 or higher. To set up the project:
 
 ```bash
 cd web-crawler && npm install
@@ -37,32 +36,15 @@ Execute the test suite:
 npm run test
 ```
 
-## Technical Overview
+Example outputs of the crawler and the test suite can be found in the `./examples` directory.
 
-The crawler implements several key features:
-
-### Queue Management
-
-- Efficient URL queue handling using Set data structures
-- Prevents duplicate visits
-- Maintains proper domain restrictions
-
-### Robots.txt Compliance
-
-- Parses and respects robots.txt directives
-- Filters out disallowed paths
-
-### Error Handling
-
-- Comprehensive input validation
-- Graceful handling of failed requests
-- Detailed error logging
-
-### URL Processing
-
-- Handles both absolute and relative URLs
-- Validates URLs before processing
-- Filters out binary files (PDF, MP3, JPG, etc.)
+```bash
+examples/
+├── crawler-output-image-error-handling
+├── crawler-output-image-finished
+├── crawler-output-video
+└── test-output-image
+```
 
 ## Reflections
 
@@ -72,41 +54,39 @@ Hello 👋 thanks for the opportunity to interview with Monzo! This was an enjoy
 
 I feel my solution successfully meets all the core requirements:
 
-- ✓ Visits each URL on the same domain
-- ✓ Prints visited URLs and found links
-- ✓ Restricts to one subdomain
-- ✓ Custom implementation without crawler frameworks
-- ✓ Uses permitted libraries only for HTML parsing
-- ✓ Comprehensive test coverage
+✓ Visits each URL on the same domain  
+✓ Prints visited URLs and found links  
+✓ Restricts to one subdomain  
+✓ Custom implementation without crawler frameworks  
+✓ Uses permitted libraries only for HTML parsing  
+✓ Comprehensive test coverage
 
-### Technical Highlights
+### Technical Overview
 
-#### Robust Architecture
+The crawler is built with key features and considerations to ensure efficient, reliable, and maintainable web crawling:
 
-- Clear separation of concerns
-- Modular design with single-responsibility functions
-- Comprehensive JSDoc documentation
-- Consistent error handling patterns
+#### Key Features
 
-#### Safety Features
+- Queue Management: Efficient URL handling with a Set-based approach to prevent duplicates, enforce domain restrictions, and optimise memory use. Uses FIFO structure to crawl pages level by level (BFS-like approach).
+- Robots.txt Compliance: Parses robots.txt to respect site restrictions, filtering out disallowed paths.
+- URL Processing: Supports absolute and relative URLs, validates them before processing, and filters out binary file types (PDF, MP3, JPG, etc.).
 
-- Rate limiting to prevent server overload
-- Content-Type validation before HTML parsing
-- Graceful failure handling with detailed logging
-- Domain restriction enforcement
+#### Error Handling & Safety Features
 
-#### Performance Considerations
+- Input Validation: Ensures valid URLs and correctly formatted input.
+- Graceful Failure: Handles failed requests with clear error messages, and logs detailed reasons for failures.
+- Rate Limiting: Prevents server overload by limiting request frequency.
+- Content-Type Validation: Ensures only HTML content is parsed.
 
-- Efficient Set-based duplicate detection
-- Optimised URL queue management
-- Memory-efficient processing (time and space complexity of O(n))
-- FIFO queue enables BFS-like algorithm, crawling pages level by level
+#### Architecture & Performance
+
+- Modular Design: Clear separation of concerns with single-responsibility functions and comprehensive JSDoc documentation.
+- Memory & Time Efficiency: Optimised with time and space complexity of O(n), leveraging Set-based duplicate detection and optimised queue management for scalable crawling.
 
 #### Developer Experience
 
-- Detailed console logging for debugging
-- Clear error messages with specific failure reasons
-- Well-structured codebase for maintainability
+- Logging: Provides detailed logs for debugging and insights into crawling status.
+- Maintainability: Well-structured codebase with consistent error handling for easy updates and debugging.
 
 ### Future Enhancements
 
