@@ -72,12 +72,12 @@ Hello 👋 thanks for the opportunity to interview with Monzo! This was an enjoy
 
 I feel my solution successfully meets all the core requirements:
 
-✓ Visits each URL on the same domain
-✓ Prints visited URLs and found links
-✓ Restricts to one subdomain
-✓ Custom implementation without crawler frameworks
-✓ Uses permitted libraries only for HTML parsing
-✓ Comprehensive test coverage
+- ✓ Visits each URL on the same domain
+- ✓ Prints visited URLs and found links
+- ✓ Restricts to one subdomain
+- ✓ Custom implementation without crawler frameworks
+- ✓ Uses permitted libraries only for HTML parsing
+- ✓ Comprehensive test coverage
 
 ### Technical Highlights
 
