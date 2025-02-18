@@ -67,32 +67,32 @@ The crawler is built with key features and considerations to ensure efficient, r
 
 #### Key Features
 
-- Queue Management: Efficient URL handling with a Set-based approach to prevent duplicates, enforce domain restrictions, and optimise memory use. Uses FIFO structure to crawl pages level by level (BFS-like approach).
-- Robots.txt Compliance: Parses robots.txt to respect site restrictions, filtering out disallowed paths.
-- URL Processing: Supports absolute and relative URLs, validates them before processing, and filters out binary file types (PDF, MP3, JPG, etc.).
+- **Queue Management**: Efficient URL handling with a Set-based approach to prevent duplicates, enforce domain restrictions, and optimise memory use. Uses FIFO structure to crawl pages level by level (BFS-like approach).
+- **Robots.txt Compliance**: Parses robots.txt to respect site restrictions, filtering out disallowed paths.
+- **URL Processing**: Supports absolute and relative URLs, validates them before processing, and filters out binary file types (PDF, MP3, JPG, etc.).
 
 #### Error Handling & Safety Features
 
-- Input Validation: Ensures valid URLs and correctly formatted input.
-- Graceful Failure: Handles failed requests with clear error messages, and logs detailed reasons for failures.
-- Rate Limiting: Prevents server overload by limiting request frequency.
-- Content-Type Validation: Ensures only HTML content is parsed.
+- **Input Validation**: Ensures valid URLs and correctly formatted input.
+- **Graceful Failure**: Handles failed requests with clear error messages, and logs detailed reasons for failures.
+- **Rate Limiting**: Prevents server overload by limiting request frequency.
+- **Content-Type Validation**: Ensures only HTML content is parsed.
 
 #### Architecture & Performance
 
-- Modular Design: Clear separation of concerns with single-responsibility functions and comprehensive JSDoc documentation.
-- Memory & Time Efficiency: Optimised with time and space complexity of O(n), leveraging Set-based duplicate detection and optimised queue management for scalable crawling.
+- **Modular Design**: Clear separation of concerns with single-responsibility functions and comprehensive JSDoc documentation.
+- **Memory & Time Efficiency**: Optimised with time and space complexity of O(n), leveraging Set-based duplicate detection and optimised queue management for scalable crawling.
 
 #### Developer Experience
 
-- Logging: Provides detailed logs for debugging and insights into crawling status.
-- Maintainability: Well-structured codebase with consistent error handling for easy updates and debugging.
+- **Logging**: Provides detailed logs for debugging and insights into crawling status.
+- **Maintainability**: Well-structured codebase with consistent error handling for easy updates and debugging.
 
 ### Future Enhancements
 
 #### Processing URLs
 
-- I noticed the crawler doesn't handle redirects effectively - for example, both "https://monzo.com/" and "https://www.monzo.com/" appeared in the crawl queue, meaning some pages could potentially get crawled twice. With more time, I'd look into implementing DNS-level domain validation and standardising URLs (like stripping "www.") before adding them to the queue to prevent these duplicate crawls
+- I noticed the crawler doesn't seem to handle redirects effectively - for example, both "https://monzo.com/" and "https://www.monzo.com/" appeared in the crawl queue, meaning some pages could potentially get crawled twice. With more time, I'd look into implementing DNS-level domain validation and standardising URLs (like stripping "www.") before adding them to the queue to prevent these duplicate crawls
 
 #### Performance Optimisation
 
