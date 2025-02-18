@@ -76,7 +76,7 @@ const fetchHTML = async (url) => {
 		const response = await axios.get(url);
 
 		if (!response || response.status >= 400) {
-			throw new Error(`Axios response error (${response.status}) when fetching "${url}`);
+			throw new Error(`Axios response error (${response.status}) when fetching HTML from "${url}`);
 		}
 
 		// Ensure response.data is a HTML string
