@@ -66,7 +66,7 @@ The crawler implements several key features:
 
 ## Reflections
 
-Hello 👋 I'm Cynthia, and thanks for the opportunity to interview with Monzo. This was an enjoyably challenging task, balancing robustness and pragmatism within the time constraints.
+Hello 👋 thanks for the opportunity to interview with Monzo! This was an enjoyably challenging task, balancing robustness and pragmatism within the time constraints.
 
 ### Functional Requirements
 
@@ -99,7 +99,8 @@ I feel my solution successfully meets all the core requirements:
 
 - Efficient Set-based duplicate detection
 - Optimised URL queue management
-- Memory-efficient processing
+- Memory-efficient processing (time and space complexity of O(n))
+- FIFO queue enables BFS-like algorithm, crawling pages level by level
 
 #### Developer Experience
 
@@ -109,8 +110,29 @@ I feel my solution successfully meets all the core requirements:
 
 ### Future Enhancements
 
-- URL Re-directs: Doesn't handle re-directs e.g. `'https://monzo.com/'` vs `'https://www.monzo.com/'` - both appear in the unique set. Could get around this by checking IP address with DNS perhaps? but seemed overkill for a simple web crawler.
-- Optimise Algorithm: could improve using BFS (over DFS) as essentially a graph, and want to avoid potential crawler-trap with DFS approach
-- Retry Handling: if a URL fails we handle that with storing >4xx responses in an unprocessableURLs array, which I could store as an array of objects with keys like URL, retryCount, timeOut. Can retry the unprocessableURLs up to a max # of retries e.g. 5, and timeout increases each time to allow for service being down for example
-- State Persistence: no persistent storage so if programme shuts down then can't re-start where it left off, and will have to crawl again from the start. Would implement a local save state using node's in-built writeFileSync where I'd store the URLs visited and URLs in the queue when the programme stopped, so that it can resume the loop when re-run. I'd need to update the the params input for the main function to handle this though.
-- Concurrent Requests: Currently only 1 crawler thread running, so could look ino setting up multiple crawler threads to can do concurrent requests thus improving performance and speed
+#### Processing URLs
+
+- I noticed the crawler doesn't handle redirects effectively - for example, both "https://monzo.com/" and "https://www.monzo.com/" appeared in the crawl queue, meaning some pages could potentially get crawled twice. With more time, I'd look into implementing DNS-level domain validation and standardising URLs (like stripping "www.") before adding them to the queue to prevent these duplicate crawls
+
+#### Performance Optimisation
+
+- The current implementation uses a single crawler thread, which works but isn't optimal for performance. I'd be interested in exploring concurrent crawling with multiple threads to speed up the process. However, this would need careful consideration around rate limiting - I'd need to ensure the concurrent crawlers don't accidentally overwhelm the target servers with too many simultaneous requests.
+
+- To prevent the crawler from getting trapped in infinite loops, I'd add a depth counter to limit how deep the crawler can go on any given path.
+
+#### Resilience
+
+- The current error handling is functional but basic - failed URLs are stored in an unprocessableURLs array and reported at the end. Given more time, I'd implement a more sophisticated retry mechanism with exponential backoff. Instead of just storing URL strings, I'd create objects containing the failed URL, retry count, and timeout period. This would allow for intelligent retry attempts with increasing delays between each try, up to a maximum number of attempts before considering the URL truly unprocessable.
+
+- Another limitation is the lack of state persistence. If the script stops running, all progress is lost and the crawler needs to start over from the beginning. A simple solution would be to use Node's writeFileSync to periodically save the current state (visited URLs and queue contents) to disk. This would allow the crawler to resume from where it left off if interrupted. This would require some restructuring of how the crawler receives its initial URL(s), but would make it much more resilient in practice.
+
+#### Test Coverage Improvements
+
+The current test suite covers the basic happy paths and essential error cases. With more time, I would expand the test coverage to include:
+
+- Edge cases for HTML parsing and URL extraction
+- Comprehensive validation of robots.txt parsing
+- Rate limiting behavior verification
+- Network failure scenarios and retry mechanisms (once implemented)
+- State management and queue processing edge cases (once implemented)
+- Concurrent request handling (once implemented)
