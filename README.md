@@ -27,7 +27,7 @@ Dependencies:
 Run the crawler by providing a starting URL:
 
 ```bash
-node index.js https://monzo.com/
+node index.js https://insert-site.com/
 ```
 
 Execute the test suite:
@@ -48,11 +48,7 @@ examples/
 
 ## Reflections
 
-Hello 👋 thanks for the opportunity to interview with Monzo! This was an enjoyably challenging task, balancing robustness and pragmatism within the time constraints.
-
 ### Functional Requirements
-
-I feel my solution successfully meets all the core requirements:
 
 ✓ Visits each URL on the same domain  
 ✓ Prints visited URLs and found links  
@@ -92,7 +88,7 @@ The crawler is built with key features and considerations to ensure efficient, r
 
 #### Processing URLs
 
-- I noticed the crawler doesn't seem to handle redirects effectively - for example, both "https://monzo.com/" and "https://www.monzo.com/" appeared in the crawl queue, meaning some pages could potentially get crawled twice. With more time, I'd look into implementing DNS-level domain validation and standardising URLs (like stripping "www.") before adding them to the queue to prevent these duplicate crawls
+- I noticed the crawler doesn't seem to handle redirects effectively - for example, both "https://insert-site.com/" and "https://www.insert-site.com/" appeared in the crawl queue, meaning some pages could potentially get crawled twice. With more time, I'd look into implementing DNS-level domain validation and standardising URLs (like stripping "www.") before adding them to the queue to prevent these duplicate crawls
 
 #### Performance Optimisation
 

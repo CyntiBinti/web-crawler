@@ -1,7 +1,7 @@
 jest.mock('../lib/helpers', () => ({
 	fetchHTML: jest.fn().mockResolvedValue('<!DOCTYPE html><html><body>Test</body></html>'),
 	fetchRobotsTxt: jest.fn().mockResolvedValue(['/private/']),
-	htmlUrlExtractor: jest.fn().mockResolvedValue(['https://monzo.com/test1']),
+	htmlUrlExtractor: jest.fn().mockResolvedValue(['https://insert-site.com/test1']),
 	tidyUpUrlQueue: jest.fn().mockReturnValue([])
 }));
 
@@ -9,7 +9,7 @@ const { webCrawler } = require('../index.js');
 const { fetchHTML, fetchRobotsTxt, htmlUrlExtractor, tidyUpUrlQueue } = require('../lib/helpers');
 
 describe('Web Crawler', () => {
-	const url = 'https://monzo.com';
+	const url = 'https://insert-site.com';
 	let mockExit;
 	const mockSeedUrl = new URL(url).href;
 	const mockSeedUrlOrigin = new URL(url).origin;
